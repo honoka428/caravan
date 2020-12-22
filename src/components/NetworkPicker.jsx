@@ -27,6 +27,9 @@ class NetworkPicker extends React.Component {
 
   render() {
     const { network, frozen } = this.props;
+    if (this.props.currentStep !== 4) { // Prop: The current step
+      return null
+    }    
     return (
       <Card>
         <CardHeader title="Network" />

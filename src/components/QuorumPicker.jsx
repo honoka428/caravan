@@ -107,7 +107,9 @@ class QuorumPicker extends React.Component {
 
   render() {
     const { requiredSigners, totalSigners } = this.props;
-
+    if (this.props.currentStep !== 1) { // Prop: The current step
+      return null
+    }
     return (
       <Card>
         <CardHeader title="Quorum" />

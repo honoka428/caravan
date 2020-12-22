@@ -25,6 +25,9 @@ class AddressTypePicker extends React.Component {
 
   render() {
     const { addressType, frozen } = this.props;
+    if (this.props.currentStep !== 2) { // Prop: The current step
+      return null
+    }    
     return (
       <Card>
         <CardHeader title="Address Type" />

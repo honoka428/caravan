@@ -115,6 +115,11 @@ class ClientPicker extends React.Component {
       privateNotes,
     } = this.props;
     const { connectSuccess, connectError } = this.state;
+
+    if (this.props.currentStep !== 3) { // Prop: The current step
+      return null
+    }    
+
     return (
       <Card>
         <Grid container justify="space-between">

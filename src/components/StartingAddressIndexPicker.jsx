@@ -56,6 +56,9 @@ class StartingAddressIndexPicker extends React.Component {
       startingAddressIndexField,
       startingAddressIndexError,
     } = this.state;
+    if (this.props.currentStep !== 5) { // Prop: The current step
+      return null
+    }    
     return (
       <Card>
         <Grid container justify="space-between">

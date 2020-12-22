@@ -179,12 +179,65 @@ class CreateWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
+      currentStep: 1,
       configError: "",
       configJson: "",
       refreshing: false,
       generating: false,
     };
+
+    // Bind new functions for next and previous
+    this._next = this._next.bind(this)
+    this._prev = this._prev.bind(this)
   }
+
+  // Wizard logic taken from (https://css-tricks.com/the-magic-of-react-based-multi-step-forms/)
+
+  _next() {
+      let currentStep = this.state.currentStep
+      currentStep = currentStep >= 5 ? 6 : currentStep + 1
+      this.setState({
+          currentStep: currentStep
+      })
+  }
+      
+  _prev() {
+      let currentStep = this.state.currentStep
+      currentStep = currentStep <= 1 ? 1: currentStep - 1
+      this.setState({
+          currentStep: currentStep
+      })
+  }
+
+  get previousButton(){
+      let currentStep = this.state.currentStep;
+
+      if(currentStep !==1){
+        return (
+            <button 
+            className="btn btn-secondary" 
+            type="button" onClick={this._prev}>
+            Back
+            </button>
+        )
+      }
+      return null;
+  }
+
+  get nextButton(){
+    let currentStep = this.state.currentStep;
+
+    if(currentStep < 6){
+      return (
+          <button 
+          className="btn btn-primary float-right" 
+          type="button" onClick={this._next}>
+          Next
+          </button>        
+      )
+    }
+    return null;
+  }      
 
   componentDidMount() {
     if (sessionStorage) {
@@ -357,33 +410,6 @@ class CreateWallet extends React.Component {
     return "";
   };
 
-  renderSettings = () => {
-    const { configuring } = this.props;
-    let settings = null;
-
-    if (configuring)
-      settings = (
-        <Grid item md={4}>
-          <Box>
-            <QuorumPicker />
-          </Box>
-          <Box mt={2}>
-            <AddressTypePicker />
-          </Box>
-          <Box mt={2}>
-            <NetworkPicker />
-          </Box>
-          <Box mt={2}>
-            <ClientPicker />
-          </Box>
-          <Box mt={2}>
-            <StartingAddressIndexPicker />
-          </Box>
-        </Grid>
-      );
-    return settings;
-  };
-
   renderExtendedPublicKeyImporters = () => {
     const { totalSigners, configuring } = this.props;
     const extendedPublicKeyImporters = [];
@@ -484,6 +510,7 @@ class CreateWallet extends React.Component {
         ? "Wallet loaded, but with errors..."
         : "";
 
+    console.log(this.state.currentStep)
     return (
       <>
         <Box mt={3}>
@@ -531,25 +558,45 @@ class CreateWallet extends React.Component {
         ) : (
           ""
         )}
+
         <Box>
-          <Grid container spacing={3}>
-            <Grid item xs={12}>
-              {this.renderWalletImporter()}
-            </Grid>
-            <Grid item md={configuring ? 8 : 12}>
-              {this.renderExtendedPublicKeyImporters()}
-              <Box mt={2}>
-                <WalletGenerator
-                  generating={generating}
-                  setGenerating={(value) => this.setGenerating(value)}
-                  downloadWalletDetails={this.downloadWalletDetails}
-                  // eslint-disable-next-line no-return-assign
-                  refreshNodes={(click) => (this.generatorRefresh = click)} // FIXME TIGHT COUPLING ALERT, this calls function downstream
-                />
-              </Box>
-            </Grid>
-            {this.renderSettings()}
-          </Grid>
+            <QuorumPicker 
+              currentStep={this.state.currentStep} 
+            />
+            <AddressTypePicker 
+              currentStep={this.state.currentStep} 
+            />
+            <ClientPicker 
+              currentStep={this.state.currentStep} 
+            />
+            <NetworkPicker 
+              currentStep={this.state.currentStep} 
+            /> 
+            <StartingAddressIndexPicker 
+              currentStep={this.state.currentStep} 
+            />
+            { this.state.currentStep < 6 ? null : 
+              <Grid container spacing={3}>
+                <Grid item xs={12}>
+                  {this.renderWalletImporter()}
+                </Grid>
+                <Grid item md={configuring ? 8 : 12}>
+                  {this.renderExtendedPublicKeyImporters()}
+                  <Box mt={2}>
+                    <WalletGenerator
+                      generating={generating}
+                      setGenerating={(value) => this.setGenerating(value)}
+                      downloadWalletDetails={this.downloadWalletDetails}
+                      // eslint-disable-next-line no-return-assign
+                      refreshNodes={(click) => (this.generatorRefresh = click)} // FIXME TIGHT COUPLING ALERT, this calls function downstream
+                    />
+                  </Box>
+                </Grid>
+              </Grid>
+            }
+
+            {this.previousButton}
+            {this.nextButton}
         </Box>
       </>
     );
