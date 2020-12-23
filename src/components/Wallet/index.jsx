@@ -564,51 +564,55 @@ class CreateWallet extends React.Component {
         ) : (
           ""
         )}
-
+        
         <Box mt={2}>
-            <WizardIntro
-              currentStep={this.props.wizardCurrentStep} 
-              renderWalletImporter={this.renderWalletImporter}
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}  
-            />
-            <QuorumPicker 
-              currentStep={this.props.wizardCurrentStep} 
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}
-            />
-            <AddressTypePicker 
-              currentStep={this.props.wizardCurrentStep} 
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}              
-            />
-            <ClientPicker 
-              currentStep={this.props.wizardCurrentStep} 
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}              
-            />
-            <NetworkPicker 
-              currentStep={this.props.wizardCurrentStep} 
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}              
-            /> 
-            <StartingAddressIndexPicker 
-              currentStep={this.props.wizardCurrentStep}  
-              nextBtn={this.nextButton}
-              prevBtn={this.previousButton}              
-            />
-            { this.props.wizardCurrentStep < 6 ? null : 
-              <Grid>
-                <Box mt={3}>
-                  {this.renderWalletImporter()}
-                </Box>
-                <Box mt={3}>
-                  <Grid item md={configuring ? 8 : 12}>
-                    {this.renderExtendedPublicKeyImporters()}
-                  </Grid>
-                </Box>
-              </Grid>          
-            }
+          { !configuring ? null :
+            <div>
+              <WizardIntro
+                currentStep={this.props.wizardCurrentStep} 
+                renderWalletImporter={this.renderWalletImporter}
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}  
+              />
+              <QuorumPicker 
+                currentStep={this.props.wizardCurrentStep} 
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}
+              />
+              <AddressTypePicker 
+                currentStep={this.props.wizardCurrentStep} 
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}              
+              />
+              <ClientPicker 
+                currentStep={this.props.wizardCurrentStep} 
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}              
+              />
+              <NetworkPicker 
+                currentStep={this.props.wizardCurrentStep} 
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}              
+              /> 
+              <StartingAddressIndexPicker 
+                currentStep={this.props.wizardCurrentStep}  
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}              
+              />
+              { this.props.wizardCurrentStep < 6 ? null : 
+                <Grid>
+                  <Box mt={3}>
+                    {this.renderWalletImporter()}
+                  </Box>
+                  <Box mt={3}>
+                    <Grid item md={configuring ? 8 : 12}>
+                      {this.renderExtendedPublicKeyImporters()}
+                    </Grid>
+                  </Box>
+                </Grid>          
+              }
+            </div>
+          }
           <Box mt={2}>
             <WalletGenerator
               generating={generating}
