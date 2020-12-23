@@ -27,15 +27,12 @@ class NetworkPicker extends React.Component {
   };
 
   render() {
-    const { 
-      network,
-      frozen,
-      nextBtn,
-      prevBtn
-    } = this.props;
-    if (this.props.currentStep !== 4) { // Prop: The current step
-      return null
-    }    
+    const { network, frozen, nextBtn, prevBtn, wizardCurrentStep } = this.props;
+
+    if (wizardCurrentStep !== 4) {
+      return null;
+    }
+
     return (
       <Card className="wizard-card-wrapper">
         <CardHeader title="Network" />
@@ -73,7 +70,7 @@ class NetworkPicker extends React.Component {
           <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
             {prevBtn}
             {nextBtn}
-          </Box>              
+          </Box>
         </CardContent>
       </Card>
     );
@@ -84,12 +81,23 @@ NetworkPicker.propTypes = {
   network: PropTypes.string.isRequired,
   frozen: PropTypes.bool.isRequired,
   setNetwork: PropTypes.func.isRequired,
+  nextBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  prevBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  wizardCurrentStep: PropTypes.number.isRequired,
+};
+
+NetworkPicker.defaultProps = {
+  nextBtn: null,
+  prevBtn: null,
 };
 
 function mapStateToProps(state) {
   return {
     network: state.settings.network,
     frozen: state.settings.frozen,
+    ...{
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
+    },
   };
 }
 

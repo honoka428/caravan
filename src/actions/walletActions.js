@@ -333,6 +333,6 @@ export function resetNodesFetchErrors() {
 export function updateWizardCurrentStep(value) {
   return {
     type: UPDATE_WIZARD_STEP,
-    value
+    value,
   };
 }

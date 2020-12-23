@@ -4,7 +4,7 @@ import {
   WALLET_MODES,
   UPDATE_WALLET_MODE,
   INITIAL_LOAD_COMPLETE,
-  UPDATE_WIZARD_STEP
+  UPDATE_WIZARD_STEP,
 } from "../actions/walletActions";
 import updateState from "./utils";
 
@@ -33,7 +33,7 @@ export default (state = initialState, action) => {
     case INITIAL_LOAD_COMPLETE:
       return updateState(state, { nodesLoaded: true });
     case UPDATE_WIZARD_STEP:
-      return updateState(state, { wizardCurrentStep: action.value});    
+      return updateState(state, { wizardCurrentStep: action.value });
     default:
       return state;
   }

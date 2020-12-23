@@ -58,16 +58,14 @@ class StartingAddressIndexPicker extends React.Component {
       startingAddressIndexError,
     } = this.state;
 
-    const { nextBtn, prevBtn } = this.props;
+    const { nextBtn, prevBtn, wizardCurrentStep } = this.props;
 
-    if (this.props.currentStep !== 5) { // Prop: The current step
-      return null
-    }    
+    if (wizardCurrentStep !== 5) {
+      return null;
+    }
     return (
       <Card className="wizard-card-wrapper">
-        {/* <Grid container justify="space-between"> */}
-          <CardHeader title="Starting Address Index" />
-        {/* </Grid> */}
+        <CardHeader title="Starting Address Index" />
         <CardContent>
           <Grid item>
             <FormControl component="fieldset">
@@ -112,13 +110,13 @@ class StartingAddressIndexPicker extends React.Component {
                   helperText={startingAddressIndexError}
                 />
               )}
-            </FormControl>           
+            </FormControl>
           </Grid>
           <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
             {prevBtn}
             {nextBtn}
-          </Box>              
-        </CardContent>      
+          </Box>
+        </CardContent>
       </Card>
     );
   }
@@ -127,11 +125,22 @@ class StartingAddressIndexPicker extends React.Component {
 StartingAddressIndexPicker.propTypes = {
   startingAddressIndex: PropTypes.number.isRequired,
   setStartingAddressIndex: PropTypes.func.isRequired,
+  nextBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  prevBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  wizardCurrentStep: PropTypes.number.isRequired,
+};
+
+StartingAddressIndexPicker.defaultProps = {
+  nextBtn: null,
+  prevBtn: null,
 };
 
 function mapStateToProps(state) {
   return {
     startingAddressIndex: state.settings.startingAddressIndex,
+    ...{
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
+    },
   };
 }
 

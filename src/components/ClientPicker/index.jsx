@@ -115,19 +115,18 @@ class ClientPicker extends React.Component {
       passwordError,
       privateNotes,
       nextBtn,
-      prevBtn
+      prevBtn,
+      wizardCurrentStep,
     } = this.props;
     const { connectSuccess, connectError } = this.state;
 
-    if (this.props.currentStep !== 3) { // Prop: The current step
-      return null
-    }    
+    if (wizardCurrentStep !== 3) {
+      return null;
+    }
 
     return (
       <Card className="wizard-card-wrapper">
-        {/* <Grid container justify="space-between"> */}
-          <CardHeader title="Bitcoin Client" />
-        {/* </Grid> */}
+        <CardHeader title="Bitcoin Client" />
         <CardContent>
           <Grid item>
             <FormControl component="fieldset">
@@ -184,7 +183,7 @@ class ClientPicker extends React.Component {
           <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
             {prevBtn}
             {nextBtn}
-          </Box>              
+          </Box>
         </CardContent>
       </Card>
     );
@@ -208,6 +207,9 @@ ClientPicker.propTypes = {
   usernameError: PropTypes.string,
   setUsername: PropTypes.func.isRequired,
   setUsernameError: PropTypes.func.isRequired,
+  nextBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  prevBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  wizardCurrentStep: PropTypes.number.isRequired,
 };
 
 ClientPicker.defaultProps = {
@@ -216,6 +218,8 @@ ClientPicker.defaultProps = {
   onSuccess: null,
   passwordError: "",
   privateNotes: React.createElement("span"),
+  nextBtn: null,
+  prevBtn: null,
 };
 
 function mapStateToProps(state) {
@@ -224,6 +228,9 @@ function mapStateToProps(state) {
     client: state.client,
     urlError: state.client.urlError,
     url: state.client.url,
+    ...{
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
+    },
   };
 }
 

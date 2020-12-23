@@ -108,13 +108,14 @@ class QuorumPicker extends React.Component {
   render() {
     const {
       requiredSigners,
-      totalSigners, 
+      totalSigners,
       nextBtn,
-      prevBtn
+      prevBtn,
+      wizardCurrentStep,
     } = this.props;
 
-    if (this.props.currentStep !== 1) {
-      return null
+    if (wizardCurrentStep !== 1) {
+      return null;
     }
 
     return (
@@ -189,10 +190,10 @@ class QuorumPicker extends React.Component {
             </Grid>
           </Box>
           <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
-              {prevBtn}
-              {nextBtn}
-          </Box>                    
-        </CardContent>      
+            {prevBtn}
+            {nextBtn}
+          </Box>
+        </CardContent>
       </Card>
     );
   }
@@ -204,10 +205,23 @@ QuorumPicker.propTypes = {
   frozen: PropTypes.bool.isRequired,
   setTotalSigners: PropTypes.func.isRequired,
   setRequiredSigners: PropTypes.func.isRequired,
+  nextBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  prevBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  wizardCurrentStep: PropTypes.number.isRequired,
+};
+
+QuorumPicker.defaultProps = {
+  nextBtn: null,
+  prevBtn: null,
 };
 
 function mapStateToProps(state) {
-  return state.settings;
+  return {
+    ...state.settings,
+    ...{
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
+    },
+  };
 }
 
 const mapDispatchToProps = {

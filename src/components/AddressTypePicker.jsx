@@ -25,15 +25,18 @@ class AddressTypePicker extends React.Component {
   };
 
   render() {
-    const { 
+    const {
       addressType,
       frozen,
       nextBtn,
-      prevBtn
+      prevBtn,
+      wizardCurrentStep,
     } = this.props;
-    if (this.props.currentStep !== 2) { // Prop: The current step
-      return null
-    }    
+
+    if (wizardCurrentStep !== 2) {
+      return null;
+    }
+
     return (
       <Card className="wizard-card-wrapper">
         <CardHeader title="Address Type" />
@@ -84,7 +87,7 @@ class AddressTypePicker extends React.Component {
           <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
             {prevBtn}
             {nextBtn}
-          </Box>              
+          </Box>
         </CardContent>
       </Card>
     );
@@ -95,10 +98,23 @@ AddressTypePicker.propTypes = {
   addressType: PropTypes.string.isRequired,
   frozen: PropTypes.bool.isRequired,
   setType: PropTypes.func.isRequired,
+  nextBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  prevBtn: PropTypes.shape({ $$typeof: PropTypes.symbol }),
+  wizardCurrentStep: PropTypes.number.isRequired,
+};
+
+AddressTypePicker.defaultProps = {
+  nextBtn: null,
+  prevBtn: null,
 };
 
 function mapStateToProps(state) {
-  return state.settings;
+  return {
+    ...state.settings,
+    ...{
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
+    },
+  };
 }
 
 const mapDispatchToProps = {

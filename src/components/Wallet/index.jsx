@@ -14,7 +14,7 @@ import {
   updateChangeSliceAction,
   updateDepositSliceAction,
   updateWalletNameAction as updateWalletNameActionImport,
-  updateWizardCurrentStep as updateWizardCurrentStepAction
+  updateWizardCurrentStep as updateWizardCurrentStepAction,
 } from "../../actions/walletActions";
 import { fetchSliceData as fetchSliceDataAction } from "../../actions/braidActions";
 import walletSelectors from "../../selectors";
@@ -58,7 +58,7 @@ import {
   SET_CLIENT_USERNAME,
 } from "../../actions/clientActions";
 import { clientPropTypes, slicePropTypes } from "../../proptypes";
-import "./walletstyles.css"
+import "./walletstyles.css";
 
 class CreateWallet extends React.Component {
   static validateProperties(config, properties, key) {
@@ -188,69 +188,57 @@ class CreateWallet extends React.Component {
       generating: false,
     };
 
-    // Bind new functions for next and previous
-    this._next = this._next.bind(this)
-    this._prev = this._prev.bind(this)
+    this.next = this.next.bind(this);
+    this.prev = this.prev.bind(this);
   }
-
-  // Wizard logic taken from (https://css-tricks.com/the-magic-of-react-based-multi-step-forms/)
-
-  _next() {
-      let currentStep = this.props.wizardCurrentStep
-      currentStep = currentStep >= 5 ? 6 : currentStep + 1
-      this.props.updateWizardCurrentStep(currentStep)
-  }
-      
-  _prev() {
-      let currentStep = this.props.wizardCurrentStep
-      currentStep = currentStep <= 0 ? 1: currentStep - 1
-      this.props.updateWizardCurrentStep(currentStep)
-  }
-
-  get previousButton(){
-      let currentStep = this.props.wizardCurrentStep;
-
-      if(currentStep !==0){
-        return (
-          <Button
-            id="btn-previous"
-            type="button"
-            variant="contained"
-            color="primary"
-            onClick={this._prev}
-          >           
-          Back
-          </Button>                  
-        )
-      }
-      return null;
-  }
-
-  get nextButton(){
-    let currentStep = this.props.wizardCurrentStep;
-    let buttonText = currentStep > 0 ? "Next" : "Manually Enter Wallet Details";
-
-    if(currentStep < 6){
-      return (
-          <Button
-            id="btn-next"
-            type="button"
-            variant="contained"
-            color="primary"
-            onClick={this._next}
-          >           
-            {buttonText}
-          </Button>               
-      )
-    }
-    return null;
-  }      
 
   componentDidMount() {
     if (sessionStorage) {
       const configJson = sessionStorage.getItem(CARAVAN_CONFIG);
       if (configJson) this.setConfigJson(configJson);
     }
+  }
+
+  get previousButton() {
+    const { wizardCurrentStep } = this.props;
+    const currentStep = wizardCurrentStep;
+
+    if (currentStep !== 0) {
+      return (
+        <Button
+          id="btn-previous"
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={this.prev}
+        >
+          Back
+        </Button>
+      );
+    }
+    return null;
+  }
+
+  get nextButton() {
+    const { wizardCurrentStep } = this.props;
+    const currentStep = wizardCurrentStep;
+    const buttonText =
+      currentStep > 0 ? "Next" : "Manually Enter Wallet Details";
+
+    if (currentStep < 6) {
+      return (
+        <Button
+          id="btn-next"
+          type="button"
+          variant="contained"
+          color="primary"
+          onClick={this.next}
+        >
+          {buttonText}
+        </Button>
+      );
+    }
+    return null;
   }
 
   setConfigJson(configJson) {
@@ -474,6 +462,20 @@ class CreateWallet extends React.Component {
     this.setState({ generating: false });
   };
 
+  next() {
+    const { wizardCurrentStep, updateWizardCurrentStep } = this.props;
+    let currentStep = wizardCurrentStep;
+    currentStep = currentStep >= 5 ? 6 : currentStep + 1;
+    updateWizardCurrentStep(currentStep);
+  }
+
+  prev() {
+    const { wizardCurrentStep, updateWizardCurrentStep } = this.props;
+    let currentStep = wizardCurrentStep;
+    currentStep = currentStep <= 0 ? 1 : currentStep - 1;
+    updateWizardCurrentStep(currentStep);
+  }
+
   /**
    * Callback function to pass to the address importer
    * after addresses have been imported we want
@@ -510,6 +512,7 @@ class CreateWallet extends React.Component {
       nodesLoaded,
       frozen,
       unknownAddresses,
+      wizardCurrentStep,
     } = this.props;
     const { refreshing, generating } = this.state;
     const walletLoadError =
@@ -564,55 +567,47 @@ class CreateWallet extends React.Component {
         ) : (
           ""
         )}
-        
+
         <Box mt={2}>
-          { !configuring ? null :
+          {!configuring ? null : (
             <div>
               <WizardIntro
-                currentStep={this.props.wizardCurrentStep} 
                 renderWalletImporter={this.renderWalletImporter}
-                nextBtn={this.nextButton}
-                prevBtn={this.previousButton}  
-              />
-              <QuorumPicker 
-                currentStep={this.props.wizardCurrentStep} 
                 nextBtn={this.nextButton}
                 prevBtn={this.previousButton}
               />
-              <AddressTypePicker 
-                currentStep={this.props.wizardCurrentStep} 
+              <QuorumPicker
                 nextBtn={this.nextButton}
-                prevBtn={this.previousButton}              
+                prevBtn={this.previousButton}
               />
-              <ClientPicker 
-                currentStep={this.props.wizardCurrentStep} 
+              <AddressTypePicker
                 nextBtn={this.nextButton}
-                prevBtn={this.previousButton}              
+                prevBtn={this.previousButton}
               />
-              <NetworkPicker 
-                currentStep={this.props.wizardCurrentStep} 
+              <ClientPicker
                 nextBtn={this.nextButton}
-                prevBtn={this.previousButton}              
-              /> 
-              <StartingAddressIndexPicker 
-                currentStep={this.props.wizardCurrentStep}  
-                nextBtn={this.nextButton}
-                prevBtn={this.previousButton}              
+                prevBtn={this.previousButton}
               />
-              { this.props.wizardCurrentStep < 6 ? null : 
+              <NetworkPicker
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}
+              />
+              <StartingAddressIndexPicker
+                nextBtn={this.nextButton}
+                prevBtn={this.previousButton}
+              />
+              {wizardCurrentStep < 6 ? null : (
                 <Grid>
-                  <Box mt={3}>
-                    {this.renderWalletImporter()}
-                  </Box>
+                  <Box mt={3}>{this.renderWalletImporter()}</Box>
                   <Box mt={3}>
                     <Grid item md={configuring ? 8 : 12}>
                       {this.renderExtendedPublicKeyImporters()}
                     </Grid>
                   </Box>
-                </Grid>          
-              }
+                </Grid>
+              )}
             </div>
-          }
+          )}
           <Box mt={2}>
             <WalletGenerator
               generating={generating}
@@ -678,6 +673,7 @@ CreateWallet.propTypes = {
   unknownSlices: PropTypes.arrayOf(PropTypes.shape(slicePropTypes)).isRequired,
   walletName: PropTypes.string.isRequired,
   walletDetailsText: PropTypes.string.isRequired,
+  wizardCurrentStep: PropTypes.number.isRequired,
 };
 
 CreateWallet.defaultProps = {
