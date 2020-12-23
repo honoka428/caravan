@@ -6,6 +6,7 @@ import { TESTNET, MAINNET } from "unchained-bitcoin";
 // Components
 
 import {
+  Box,
   Card,
   CardHeader,
   CardContent,
@@ -26,12 +27,17 @@ class NetworkPicker extends React.Component {
   };
 
   render() {
-    const { network, frozen } = this.props;
+    const { 
+      network,
+      frozen,
+      nextBtn,
+      prevBtn
+    } = this.props;
     if (this.props.currentStep !== 4) { // Prop: The current step
       return null
     }    
     return (
-      <Card>
+      <Card className="wizard-card-wrapper">
         <CardHeader title="Network" />
         <CardContent>
           <FormControl component="fieldset">
@@ -64,6 +70,10 @@ class NetworkPicker extends React.Component {
               </small>
             </FormHelperText>
           </FormControl>
+          <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
+            {prevBtn}
+            {nextBtn}
+          </Box>              
         </CardContent>
       </Card>
     );

@@ -2,6 +2,7 @@ import React from "react";
 import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import {
+  Box,
   Grid,
   Card,
   CardHeader,
@@ -113,6 +114,8 @@ class ClientPicker extends React.Component {
       usernameError,
       passwordError,
       privateNotes,
+      nextBtn,
+      prevBtn
     } = this.props;
     const { connectSuccess, connectError } = this.state;
 
@@ -121,10 +124,10 @@ class ClientPicker extends React.Component {
     }    
 
     return (
-      <Card>
-        <Grid container justify="space-between">
+      <Card className="wizard-card-wrapper">
+        {/* <Grid container justify="space-between"> */}
           <CardHeader title="Bitcoin Client" />
-        </Grid>
+        {/* </Grid> */}
         <CardContent>
           <Grid item>
             <FormControl component="fieldset">
@@ -178,6 +181,10 @@ class ClientPicker extends React.Component {
               )}
             </FormControl>
           </Grid>
+          <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
+            {prevBtn}
+            {nextBtn}
+          </Box>              
         </CardContent>
       </Card>
     );

@@ -106,12 +106,19 @@ class QuorumPicker extends React.Component {
   };
 
   render() {
-    const { requiredSigners, totalSigners } = this.props;
-    if (this.props.currentStep !== 1) { // Prop: The current step
+    const {
+      requiredSigners,
+      totalSigners, 
+      nextBtn,
+      prevBtn
+    } = this.props;
+
+    if (this.props.currentStep !== 1) {
       return null
     }
+
     return (
-      <Card>
+      <Card className="wizard-card-wrapper">
         <CardHeader title="Quorum" />
         <CardContent>
           <Box>
@@ -181,7 +188,11 @@ class QuorumPicker extends React.Component {
               </Grid>
             </Grid>
           </Box>
-        </CardContent>
+          <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
+              {prevBtn}
+              {nextBtn}
+          </Box>                    
+        </CardContent>      
       </Card>
     );
   }

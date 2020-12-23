@@ -5,6 +5,7 @@ import { P2SH, P2SH_P2WSH, P2WSH } from "unchained-bitcoin";
 
 // Components
 import {
+  Box,
   Card,
   CardHeader,
   CardContent,
@@ -24,12 +25,17 @@ class AddressTypePicker extends React.Component {
   };
 
   render() {
-    const { addressType, frozen } = this.props;
+    const { 
+      addressType,
+      frozen,
+      nextBtn,
+      prevBtn
+    } = this.props;
     if (this.props.currentStep !== 2) { // Prop: The current step
       return null
     }    
     return (
-      <Card>
+      <Card className="wizard-card-wrapper">
         <CardHeader title="Address Type" />
         <CardContent>
           <FormControl component="fieldset">
@@ -75,6 +81,10 @@ class AddressTypePicker extends React.Component {
               </small>
             </FormHelperText>
           </FormControl>
+          <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
+            {prevBtn}
+            {nextBtn}
+          </Box>              
         </CardContent>
       </Card>
     );

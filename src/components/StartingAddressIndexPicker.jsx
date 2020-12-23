@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import { validateBIP32Index } from "unchained-bitcoin";
 import {
+  Box,
   Grid,
   Card,
   CardHeader,
@@ -56,14 +57,17 @@ class StartingAddressIndexPicker extends React.Component {
       startingAddressIndexField,
       startingAddressIndexError,
     } = this.state;
+
+    const { nextBtn, prevBtn } = this.props;
+
     if (this.props.currentStep !== 5) { // Prop: The current step
       return null
     }    
     return (
-      <Card>
-        <Grid container justify="space-between">
+      <Card className="wizard-card-wrapper">
+        {/* <Grid container justify="space-between"> */}
           <CardHeader title="Starting Address Index" />
-        </Grid>
+        {/* </Grid> */}
         <CardContent>
           <Grid item>
             <FormControl component="fieldset">
@@ -108,9 +112,13 @@ class StartingAddressIndexPicker extends React.Component {
                   helperText={startingAddressIndexError}
                 />
               )}
-            </FormControl>
+            </FormControl>           
           </Grid>
-        </CardContent>
+          <Box mt={3} id="wallet-wizard-nav-btn-wrapper">
+            {prevBtn}
+            {nextBtn}
+          </Box>              
+        </CardContent>      
       </Card>
     );
   }
