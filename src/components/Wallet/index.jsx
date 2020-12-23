@@ -14,6 +14,7 @@ import {
   updateChangeSliceAction,
   updateDepositSliceAction,
   updateWalletNameAction as updateWalletNameActionImport,
+  updateWizardCurrentStep as updateWizardCurrentStepAction
 } from "../../actions/walletActions";
 import { fetchSliceData as fetchSliceDataAction } from "../../actions/braidActions";
 import walletSelectors from "../../selectors";
@@ -181,7 +182,6 @@ class CreateWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentStep: 0,
       configError: "",
       configJson: "",
       refreshing: false,
@@ -196,23 +196,19 @@ class CreateWallet extends React.Component {
   // Wizard logic taken from (https://css-tricks.com/the-magic-of-react-based-multi-step-forms/)
 
   _next() {
-      let currentStep = this.state.currentStep
+      let currentStep = this.props.wizardCurrentStep
       currentStep = currentStep >= 5 ? 6 : currentStep + 1
-      this.setState({
-          currentStep: currentStep
-      })
+      this.props.updateWizardCurrentStep(currentStep)
   }
       
   _prev() {
-      let currentStep = this.state.currentStep
+      let currentStep = this.props.wizardCurrentStep
       currentStep = currentStep <= 0 ? 1: currentStep - 1
-      this.setState({
-          currentStep: currentStep
-      })
+      this.props.updateWizardCurrentStep(currentStep)
   }
 
   get previousButton(){
-      let currentStep = this.state.currentStep;
+      let currentStep = this.props.wizardCurrentStep;
 
       if(currentStep !==0){
         return (
@@ -231,7 +227,7 @@ class CreateWallet extends React.Component {
   }
 
   get nextButton(){
-    let currentStep = this.state.currentStep;
+    let currentStep = this.props.wizardCurrentStep;
     let buttonText = currentStep > 0 ? "Next" : "Manually Enter Wallet Details";
 
     if(currentStep < 6){
@@ -521,7 +517,6 @@ class CreateWallet extends React.Component {
         ? "Wallet loaded, but with errors..."
         : "";
 
-    console.log(this.state.currentStep)
     return (
       <>
         <Box mt={3}>
@@ -572,37 +567,37 @@ class CreateWallet extends React.Component {
 
         <Box mt={2}>
             <WizardIntro
-              currentStep={this.state.currentStep} 
+              currentStep={this.props.wizardCurrentStep} 
               renderWalletImporter={this.renderWalletImporter}
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}  
             />
             <QuorumPicker 
-              currentStep={this.state.currentStep} 
+              currentStep={this.props.wizardCurrentStep} 
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}
             />
             <AddressTypePicker 
-              currentStep={this.state.currentStep} 
+              currentStep={this.props.wizardCurrentStep} 
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}              
             />
             <ClientPicker 
-              currentStep={this.state.currentStep}
+              currentStep={this.props.wizardCurrentStep} 
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}              
             />
             <NetworkPicker 
-              currentStep={this.state.currentStep}
+              currentStep={this.props.wizardCurrentStep} 
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}              
             /> 
             <StartingAddressIndexPicker 
-              currentStep={this.state.currentStep} 
+              currentStep={this.props.wizardCurrentStep}  
               nextBtn={this.nextButton}
               prevBtn={this.previousButton}              
             />
-            { this.state.currentStep < 6 ? null : 
+            { this.props.wizardCurrentStep < 6 ? null : 
               <Grid>
                 <Box mt={3}>
                   {this.renderWalletImporter()}
@@ -611,10 +606,6 @@ class CreateWallet extends React.Component {
                   <Grid item md={configuring ? 8 : 12}>
                     {this.renderExtendedPublicKeyImporters()}
                   </Grid>
-                </Box>
-                <Box mt={3}>
-                  {this.nextButton}
-                  {this.previousButton}
                 </Box>
               </Grid>          
             }
@@ -678,6 +669,7 @@ CreateWallet.propTypes = {
   setClientUsername: PropTypes.func.isRequired,
   totalSigners: PropTypes.number.isRequired,
   updateWalletNameAction: PropTypes.func.isRequired,
+  updateWizardCurrentStep: PropTypes.func.isRequired,
   unknownAddresses: PropTypes.arrayOf(PropTypes.string).isRequired,
   unknownSlices: PropTypes.arrayOf(PropTypes.shape(slicePropTypes)).isRequired,
   walletName: PropTypes.string.isRequired,
@@ -696,6 +688,7 @@ function mapStateToProps(state) {
       walletName: state.wallet.common.walletName,
       nodesLoaded: state.wallet.common.nodesLoaded,
       walletMode: state.wallet.common.walletMode,
+      wizardCurrentStep: state.wallet.common.wizardCurrentStep,
     },
     confirmedBalance: walletSelectors.getConfirmedBalance(state),
     pendingBalance: walletSelectors.getPendingBalance(state),
@@ -724,6 +717,7 @@ const mapDispatchToProps = {
   setExtendedPublicKeyImporterFinalized: setExtendedPublicKeyImporterFinalizedAction,
   setExtendedPublicKeyImporterVisible: setExtendedPublicKeyImporterVisibleAction,
   updateWalletNameAction: updateWalletNameActionImport,
+  updateWizardCurrentStep: updateWizardCurrentStepAction,
   ...wrappedActions({
     setClientType: SET_CLIENT_TYPE,
     setClientUrl: SET_CLIENT_URL,
