@@ -19,6 +19,7 @@ import { fetchSliceData as fetchSliceDataAction } from "../../actions/braidActio
 import walletSelectors from "../../selectors";
 import { CARAVAN_CONFIG } from "./constants";
 import WalletInfoCard from "./WalletInfoCard";
+import WizardIntro from "../WizardIntro";
 import NetworkPicker from "../NetworkPicker";
 import QuorumPicker from "../QuorumPicker";
 import AddressTypePicker from "../AddressTypePicker";
@@ -56,6 +57,7 @@ import {
   SET_CLIENT_USERNAME,
 } from "../../actions/clientActions";
 import { clientPropTypes, slicePropTypes } from "../../proptypes";
+import "./walletstyles.css"
 
 class CreateWallet extends React.Component {
   static validateProperties(config, properties, key) {
@@ -179,7 +181,7 @@ class CreateWallet extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      currentStep: 1,
+      currentStep: 0,
       configError: "",
       configJson: "",
       refreshing: false,
@@ -203,7 +205,7 @@ class CreateWallet extends React.Component {
       
   _prev() {
       let currentStep = this.state.currentStep
-      currentStep = currentStep <= 1 ? 1: currentStep - 1
+      currentStep = currentStep <= 0 ? 1: currentStep - 1
       this.setState({
           currentStep: currentStep
       })
@@ -212,13 +214,17 @@ class CreateWallet extends React.Component {
   get previousButton(){
       let currentStep = this.state.currentStep;
 
-      if(currentStep !==1){
+      if(currentStep !==0){
         return (
-            <button 
-            className="btn btn-secondary" 
-            type="button" onClick={this._prev}>
-            Back
-            </button>
+          <Button
+            id="btn-previous"
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={this._prev}
+          >           
+          Back
+          </Button>                  
         )
       }
       return null;
@@ -226,14 +232,19 @@ class CreateWallet extends React.Component {
 
   get nextButton(){
     let currentStep = this.state.currentStep;
+    let buttonText = currentStep > 0 ? "Next" : "Manually Enter Wallet Details";
 
     if(currentStep < 6){
       return (
-          <button 
-          className="btn btn-primary float-right" 
-          type="button" onClick={this._next}>
-          Next
-          </button>        
+          <Button
+            id="btn-next"
+            type="button"
+            variant="contained"
+            color="primary"
+            onClick={this._next}
+          >           
+            {buttonText}
+          </Button>               
       )
     }
     return null;
@@ -559,44 +570,63 @@ class CreateWallet extends React.Component {
           ""
         )}
 
-        <Box>
+        <Box mt={2}>
+            <WizardIntro
+              currentStep={this.state.currentStep} 
+              renderWalletImporter={this.renderWalletImporter}
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}  
+            />
             <QuorumPicker 
               currentStep={this.state.currentStep} 
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}
             />
             <AddressTypePicker 
               currentStep={this.state.currentStep} 
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}              
             />
             <ClientPicker 
-              currentStep={this.state.currentStep} 
+              currentStep={this.state.currentStep}
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}              
             />
             <NetworkPicker 
-              currentStep={this.state.currentStep} 
+              currentStep={this.state.currentStep}
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}              
             /> 
             <StartingAddressIndexPicker 
               currentStep={this.state.currentStep} 
+              nextBtn={this.nextButton}
+              prevBtn={this.previousButton}              
             />
             { this.state.currentStep < 6 ? null : 
-              <Grid container spacing={3}>
-                <Grid item xs={12}>
+              <Grid>
+                <Box mt={3}>
                   {this.renderWalletImporter()}
-                </Grid>
-                <Grid item md={configuring ? 8 : 12}>
-                  {this.renderExtendedPublicKeyImporters()}
-                  <Box mt={2}>
-                    <WalletGenerator
-                      generating={generating}
-                      setGenerating={(value) => this.setGenerating(value)}
-                      downloadWalletDetails={this.downloadWalletDetails}
-                      // eslint-disable-next-line no-return-assign
-                      refreshNodes={(click) => (this.generatorRefresh = click)} // FIXME TIGHT COUPLING ALERT, this calls function downstream
-                    />
-                  </Box>
-                </Grid>
-              </Grid>
+                </Box>
+                <Box mt={3}>
+                  <Grid item md={configuring ? 8 : 12}>
+                    {this.renderExtendedPublicKeyImporters()}
+                  </Grid>
+                </Box>
+                <Box mt={3}>
+                  {this.nextButton}
+                  {this.previousButton}
+                </Box>
+              </Grid>          
             }
-
-            {this.previousButton}
-            {this.nextButton}
+          <Box mt={2}>
+            <WalletGenerator
+              generating={generating}
+              setGenerating={(value) => this.setGenerating(value)}
+              downloadWalletDetails={this.downloadWalletDetails}
+              // eslint-disable-next-line no-return-assign
+              refreshNodes={(click) => (this.generatorRefresh = click)} // FIXME TIGHT COUPLING ALERT, this calls function downstream
+            />
+          </Box>
         </Box>
       </>
     );
